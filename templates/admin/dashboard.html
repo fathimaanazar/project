@@ -1,0 +1,263 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Blood Donation Platform{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-cogs me-2 text-medical"></i>Admin Dashboard</h2>
+    <!--<div>
+        <a href="{{ url_for('manage_users') }}" class="btn btn-primary">
+            <i class="fas fa-users me-2"></i>Manage Users
+        </a>
+        <p>Five days ago was: {{ moment(five_days_ago).fromNow() }}</p>-->
+
+    </div>
+</div>
+
+<!-- System Statistics -->
+<div class="row mb-4">
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card border-0 shadow-sm bg-primary text-white">
+            <div class="card-body text-center">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="fw-bold">{{ stats.total_users }}</h2>
+                        <p class="mb-0">Total Users</p>
+                    </div>
+                    <div>
+                        <i class="fas fa-users fa-3x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3">
+        <a href="{{ url_for('admin_list_donors') }}" style="text-decoration:none;">
+            <div class="card border-0 shadow-sm bg-success text-white">
+                <div class="card-body text-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="fw-bold">{{ stats.total_donors }}</h2>
+                            <p class="mb-0">Blood Donors</p>
+                        </div>
+                        <div>
+                            <i class="fas fa-heart fa-3x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3">
+        <a href="{{ url_for('admin_list_hospitals') }}" style="text-decoration:none;">
+            <div class="card border-0 shadow-sm bg-info text-white">
+                <div class="card-body text-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="fw-bold">{{ stats.total_hospitals }}</h2>
+                            <p class="mb-0">Hospitals</p>
+                        </div>
+                        <div>
+                            <i class="fas fa-hospital fa-3x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3">
+        <a href="{{ url_for('admin_list_organizations') }}" style="text-decoration:none;">
+            <div class="card border-0 shadow-sm bg-warning text-white">
+                <div class="card-body text-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="fw-bold">{{ stats.total_organizations }}</h2>
+                            <p class="mb-0">Organizations</p>
+                        </div>
+                        <div>
+                            <i class="fas fa-building fa-3x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<!-- Active Requests and Quick Actions -->
+<div class="row mb-4">
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Active Blood Requests</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="text-danger fw-bold">{{ stats.active_requests }}</h3>
+                        <p class="text-muted mb-0">Requests awaiting fulfillment</p>
+                    </div>
+                    <div>
+                        <i class="fas fa-tint fa-3x text-danger opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-medical text-white">
+                <h5 class="mb-0"><i class="fas fa-tools me-2"></i>Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('manage_users') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-users me-2"></i>Manage All Users
+                    </a>
+                    <a href="{{ url_for('admin_analytics') }}" class="btn btn-outline-info">
+                        <i class="fas fa-chart-bar me-2"></i>View Analytics
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- System Overview Charts -->
+<div class="row mb-4">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i>User Distribution</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <div class="border-end">
+                            <h4 class="text-success">{{ stats.total_donors }}</h4>
+                            <p class="text-muted small">Donors</p>
+                            <div class="progress mb-2" style="height: 6px;">
+                                <div class="progress-bar bg-success" style="width: {{ (stats.total_donors / stats.total_users * 100) if stats.total_users > 0 else 0 }}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border-end">
+                            <h4 class="text-info">{{ stats.total_hospitals }}</h4>
+                            <p class="text-muted small">Hospitals</p>
+                            <div class="progress mb-2" style="height: 6px;">
+                                <div class="progress-bar bg-info" style="width: {{ (stats.total_hospitals / stats.total_users * 100) if stats.total_users > 0 else 0 }}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border-end">
+                            <h4 class="text-warning">{{ stats.total_organizations }}</h4>
+                            <p class="text-muted small">Organizations</p>
+                            <div class="progress mb-2" style="height: 6px;">
+                                <div class="progress-bar bg-warning" style="width: {{ (stats.total_organizations / stats.total_users * 100) if stats.total_users > 0 else 0 }}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <h4 class="text-secondary">{{ stats.total_users - stats.total_donors - stats.total_hospitals - stats.total_organizations }}</h4>
+                        <p class="text-muted small">Admins</p>
+                        <div class="progress mb-2" style="height: 6px;">
+                            <div class="progress-bar bg-secondary" style="width: {{ ((stats.total_users - stats.total_donors - stats.total_hospitals - stats.total_organizations) / stats.total_users * 100) if stats.total_users > 0 else 0 }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="fas fa-tint me-2"></i>Blood Type Distribution</h5>
+            </div>
+            <div class="card-body">
+                <div class="text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-tint fa-4x text-danger"></i>
+                    </div>
+                    
+                    <a href="{{ url_for('blood_type_distribution') }}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-chart-pie me-2"></i>View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity 
+<div class="row">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="fas fa-history me-2"></i>Recent System Activity</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Activity Monitoring:</strong> Real-time activity tracking feature is under development. This section will display recent user registrations, blood requests, donations, and system events.
+                </div>
+                
+                <div class="text-center text-muted py-4">
+                    <i class="fas fa-clock fa-3x mb-3"></i>
+                    <h6>Activity Feed Coming Soon</h6>
+                    <p>Monitor user activities, blood requests, and system events in real-time.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+-->
+<!-- System Health Status -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-heartbeat me-2"></i>System Health</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 text-center">
+                        <div class="text-success mb-2">
+                            <i class="fas fa-check-circle fa-2x"></i>
+                        </div>
+                        <h6>Database</h6>
+                        <span class="badge bg-success">Online</span>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <div class="text-success mb-2">
+                            <i class="fas fa-check-circle fa-2x"></i>
+                        </div>
+                        <h6>Web Server</h6>
+                        <span class="badge bg-success">Running</span>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <div class="text-success mb-2">
+                            <i class="fas fa-check-circle fa-2x"></i>
+                        </div>
+                        <h6>Authentication</h6>
+                        <span class="badge bg-success">Active</span>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <div class="text-warning mb-2">
+                            <i class="fas fa-exclamation-triangle fa-2x"></i>
+                        </div>
+                        <h6>Notifications</h6>
+                        <span class="badge bg-warning">Development</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

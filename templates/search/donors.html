@@ -1,0 +1,378 @@
+{% extends "base.html" %}
+
+{% block title %}Find Donors - Blood Donation Platform{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm sticky-top" style="top: 20px;">
+            <div class="card-header bg-medical text-white">
+                <h5 class="mb-0"><i class="fas fa-search me-2"></i>Search Filters</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.blood_type.label(class="form-label") }}
+                        {{ form.blood_type(class="form-select") }}
+                        <div class="form-text">
+                            <small>Select specific blood type or leave blank for all types</small>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.city.label(class="form-label") }}
+                        {{ form.city(class="form-control", placeholder="e.g., New York") }}
+                    </div>
+                    
+                    <div class="mb-4">
+                        {{ form.state.label(class="form-label") }}
+                        {{ form.state(class="form-control", placeholder="e.g., NY") }}
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-medical">
+                            <i class="fas fa-search me-2"></i>Search Donors
+                        </button>
+                        <a href="{{ url_for('search_donors') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-refresh me-2"></i>Clear Filters
+                        </a>
+                    </div>
+                </form>
+                
+                <!-- Quick Filters -->
+                <hr class="my-4">
+                <h6 class="text-medical"><i class="fas fa-filter me-2"></i>Quick Filters</h6>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-danger btn-sm" onclick="quickFilter('O-')">
+                        Universal Donors (O-)
+                    </button>
+                    <button class="btn btn-outline-info btn-sm" onclick="quickFilter('available')">
+                        Available Donors
+                    </button>
+                    <button class="btn btn-outline-warning btn-sm" onclick="quickFilter('rare')">
+                        Rare Blood Types
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Blood Compatibility Chart -->
+        <div class="card border-0 shadow-sm mt-4">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>Compatibility Guide</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Can Receive From</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="badge bg-danger">O-</span></td>
+                                <td>O-</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge bg-danger">O+</span></td>
+                                <td>O-, O+</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge bg-danger">A-</span></td>
+                                <td>O-, A-</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge bg-danger">A+</span></td>
+                                <td>O-, O+, A-, A+</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge bg-danger">B-</span></td>
+                                <td>O-, B-</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge bg-danger">B+</span></td>
+                                <td>O-, O+, B-, B+</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge bg-danger">AB-</span></td>
+                                <td>O-, A-, B-, AB-</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge bg-danger">AB+</span></td>
+                                <td>All Types</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-8">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-users me-2 text-medical"></i>Find Blood Donors</h2>
+            {% if donors %}
+                <span class="badge bg-medical fs-6">{{ donors|length }} donor(s) found</span>
+            {% endif %}
+        </div>
+        
+        {% if donors %}
+            <!-- Search Results -->
+            <div class="row" id="donorResults">
+                {% for donor in donors %}
+                    <div class="col-md-6 mb-4 donor-card" 
+                         data-blood-type="{{ donor.blood_type }}" 
+                         data-available="{{ donor.is_available }}">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h5 class="card-title mb-1">{{ donor.full_name }}</h5>
+                                        <p class="text-muted small mb-0">
+                                            <i class="fas fa-birthday-cake me-1"></i>
+                                            Age: {{ calculate_age(donor.date_of_birth) }}
+                                        </p>
+                                    </div>
+                                    <span class="badge bg-danger fs-6">{{ donor.blood_type }}</span>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <p class="card-text mb-2">
+                                        <i class="fas fa-map-marker-alt me-2 text-muted"></i>
+                                        {{ donor.city }}, {{ donor.state }}
+                                    </p>
+                                    <p class="card-text mb-2">
+                                        <i class="fas fa-phone me-2 text-muted"></i>
+                                        {{ donor.phone }}
+                                    </p>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <strong>Last Donation:</strong><br>
+                                    {% if donor.last_donation_date %}
+                                        <small class="text-muted">
+                                            {{ donor.last_donation_date.strftime('%B %d, %Y') }}
+                                            ({{ ((moment().date() - donor.last_donation_date).days) }} days ago)
+                                        </small>
+                                    {% else %}
+                                        <small class="text-muted">First time donor</small>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <strong>Donation Status:</strong><br>
+                                    {% if donor.is_available %}
+                                        {% if can_donate(donor) %}
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-check-circle me-1"></i>Ready to Donate
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-warning">
+                                                <i class="fas fa-clock me-1"></i>Wait Period ({{ 56 - ((moment().date() - donor.last_donation_date).days if donor.last_donation_date else 0) }} days)
+                                            </span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="badge bg-secondary">
+                                            <i class="fas fa-times-circle me-1"></i>Not Available
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                
+                                {% if donor.medical_conditions %}
+                                    <div class="mb-3">
+                                        <small class="text-muted">
+                                            <i class="fas fa-info-circle me-1"></i>
+                                            Has medical conditions - review before contact
+                                        </small>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="card-footer bg-light">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <button class="btn btn-outline-primary btn-sm" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#donorModal{{ donor.id }}">
+                                        <i class="fas fa-eye me-1"></i>View Details
+                                    </button>
+                                    
+                                    {% if session.role == 'hospital' %}
+                                        <button class="btn btn-medical btn-sm" disabled>
+                                            <i class="fas fa-envelope me-1"></i>Contact
+                                        </button>
+                                    {% else %}
+                                        <small class="text-muted">Login as hospital to contact</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Donor Details Modal -->
+                        <div class="modal fade" id="donorModal{{ donor.id }}" tabindex="-1">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">{{ donor.full_name }} - Donor Profile</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <strong>Full Name:</strong> {{ donor.full_name }}<br>
+                                                <strong>Blood Type:</strong> <span class="badge bg-danger">{{ donor.blood_type }}</span><br>
+                                                <strong>Age:</strong> {{ calculate_age(donor.date_of_birth) }} years<br>
+                                                <strong>Phone:</strong> {{ donor.phone }}
+                                            </div>
+                                            <div class="col-md-6">
+                                                <strong>Location:</strong><br>
+                                                {{ donor.address }}<br>
+                                                {{ donor.city }}, {{ donor.state }} {{ donor.zip_code }}<br><br>
+                                                <strong>Availability:</strong> 
+                                                {% if donor.is_available %}
+                                                    <span class="badge bg-success">Available</span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">Not Available</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <strong>Donation History:</strong><br>
+                                                {% if donor.last_donation_date %}
+                                                    Last donation: {{ donor.last_donation_date.strftime('%B %d, %Y') }}
+                                                    <small class="text-muted">({{ ((moment().date() - donor.last_donation_date).days) }} days ago)</small>
+                                                {% else %}
+                                                    <span class="text-muted">No previous donations</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        
+                                        {% if donor.medical_conditions %}
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <strong>Medical Conditions:</strong><br>
+                                                    <div class="alert alert-warning">
+                                                        <i class="fas fa-exclamation-triangle me-2"></i>
+                                                        {{ donor.medical_conditions }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                        
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <strong>Eligibility Status:</strong><br>
+                                                {% if can_donate(donor) %}
+                                                    <div class="alert alert-success">
+                                                        <i class="fas fa-check-circle me-2"></i>
+                                                        This donor is eligible to donate blood.
+                                                    </div>
+                                                {% else %}
+                                                    <div class="alert alert-warning">
+                                                        <i class="fas fa-clock me-2"></i>
+                                                        This donor must wait {{ 56 - ((moment().date() - donor.last_donation_date).days if donor.last_donation_date else 0) }} more days before donating again.
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        {% if session.role == 'hospital' %}
+                                            <button type="button" class="btn btn-medical" disabled>
+                                                <i class="fas fa-envelope me-2"></i>Send Request
+                                            </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            {% if donors|length == 0 and (form.blood_type.data or form.city.data or form.state.data) %}
+                <div class="text-center text-muted py-5">
+                    <i class="fas fa-search fa-4x mb-3"></i>
+                    <h5>No Donors Found</h5>
+                    <p>No donors match your current search criteria. Try adjusting your filters.</p>
+                    <a href="{{ url_for('search_donors') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-refresh me-2"></i>Clear Search
+                    </a>
+                </div>
+            {% endif %}
+            
+        {% else %}
+            <!-- Initial State -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center py-5">
+                    <div class="text-medical mb-4">
+                        <i class="fas fa-search fa-4x"></i>
+                    </div>
+                    <h4>Find Blood Donors</h4>
+                    <p class="text-muted mb-4">
+                        Search for blood donors by blood type, location, and availability status. 
+                        Use the filters on the left to narrow down your search.
+                    </p>
+                    
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="alert alert-info" role="alert">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Search Tips:</strong>
+                                <ul class="mb-0 mt-2 text-start">
+                                    <li>Leave blood type blank to see all donors</li>
+                                    <li>Use city/state filters to find local donors</li>
+                                    <li>Check compatibility guide for blood type matching</li>
+                                    <li>Consider donation eligibility when contacting donors</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function quickFilter(type) {
+    if (type === 'O-') {
+        document.querySelector('select[name="blood_type"]').value = 'O-';
+    } else if (type === 'available') {
+        // Filter for available donors
+        const cards = document.querySelectorAll('.donor-card');
+        cards.forEach(card => {
+            if (card.dataset.available === 'False') {
+                card.style.display = 'none';
+            } else {
+                card.style.display = 'block';
+            }
+        });
+        return;
+    } else if (type === 'rare') {
+        // Show rare blood types (AB-, AB+, B-, A-)
+        const cards = document.querySelectorAll('.donor-card');
+        cards.forEach(card => {
+            const bloodType = card.dataset.bloodType;
+            if (['AB-', 'AB+', 'B-', 'A-'].includes(bloodType)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+        return;
+    }
+    
+    // Submit form for blood type filters
+    document.querySelector('form').submit();
+}
+</script>
+{% endblock %}

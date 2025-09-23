@@ -1,0 +1,441 @@
+/* Blood Donation Platform Custom Styles */
+
+:root {
+    --medical-primary: #c41e3a;
+    --medical-secondary: #8b0000;
+    --medical-light: #f8f9fa;
+    --medical-dark: #343a40;
+    --medical-accent: #28a745;
+    --medical-warning: #ffc107;
+    --medical-info: #17a2b8;
+}
+
+/* Custom color classes */
+.bg-medical {
+    background-color: var(--medical-primary) !important;
+}
+
+.text-medical {
+    color: var(--medical-primary) !important;
+}
+
+.btn-medical {
+    background-color: var(--medical-primary);
+    border-color: var(--medical-primary);
+    color: white;
+}
+
+.btn-medical:hover,
+.btn-medical:focus {
+    background-color: var(--medical-secondary);
+    border-color: var(--medical-secondary);
+    color: white;
+}
+
+.btn-outline-medical {
+    border-color: var(--medical-primary);
+    color: var(--medical-primary);
+}
+
+.btn-outline-medical:hover,
+.btn-outline-medical:focus {
+    background-color: var(--medical-primary);
+    border-color: var(--medical-primary);
+    color: white;
+}
+
+/* Hero section gradient */
+.bg-gradient-medical {
+    background: linear-gradient(135deg, var(--medical-primary) 0%, var(--medical-secondary) 100%);
+}
+
+/* Blood type badges */
+.blood-type-badge {
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    text-align: center;
+    min-width: 40px;
+}
+
+/* Enhanced card styles */
+.card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Medical themed navbar */
+.navbar-dark .navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    font-weight: 500;
+    transition: color 0.2s ease-in-out;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+    color: #ffc107 !important;
+}
+
+/* Custom alert styles */
+.alert {
+    border: none;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.alert-success {
+    background-color: #d1f2eb;
+    color: #0a3622;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.alert-info {
+    background-color: #cce7f0;
+    color: #055160;
+}
+
+/* Form styling enhancements */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--medical-primary);
+    box-shadow: 0 0 0 0.2rem rgba(196, 30, 58, 0.25);
+}
+
+.form-label {
+    font-weight: 600;
+    color: #000 !important;
+    margin-bottom: 0.5rem;
+}
+
+/* Button group enhancements */
+.btn-group .btn {
+    position: relative;
+    z-index: 1;
+}
+
+.btn-group .btn:hover {
+    z-index: 2;
+}
+
+/* Table enhancements */
+.table th {
+    border-top: none;
+    font-weight: 600;
+    color: var(--medical-dark);
+    background-color: var(--medical-light);
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(196, 30, 58, 0.05);
+}
+
+/* Badge enhancements */
+.badge {
+    font-size: 0.875em;
+    padding: 0.5em 0.75em;
+}
+
+.badge.fs-6 {
+    font-size: 1rem !important;
+    padding: 0.6em 0.8em;
+}
+
+/* Modal enhancements */
+.modal-header {
+    border-bottom: 2px solid var(--medical-light);
+}
+
+.modal-footer {
+    border-top: 2px solid var(--medical-light);
+}
+
+/* Blood compatibility table */
+.blood-compatibility .row {
+    padding: 0.25rem 0;
+    border-radius: 0.25rem;
+    margin-bottom: 0.25rem;
+}
+
+.blood-compatibility .row:hover {
+    background-color: rgba(196, 30, 58, 0.05);
+}
+
+/* Statistics cards */
+.stats-card {
+    background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Progress bars */
+.progress {
+    height: 0.5rem;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 0.25rem;
+}
+
+.progress-bar {
+    transition: width 0.6s ease;
+}
+
+/* Footer styling */
+footer {
+    margin-top: auto;
+    border-top: 1px solid #dee2e6;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .display-4 {
+        font-size: 2rem;
+    }
+    
+    .hero-section {
+        padding: 2rem 0 !important;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .btn-group {
+        flex-direction: column;
+    }
+    
+    .btn-group .btn {
+        margin-bottom: 0.25rem;
+    }
+    
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .container {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    .btn {
+        font-size: 0.875rem;
+        padding: 0.5rem 1rem;
+    }
+    
+    .navbar-brand {
+        font-size: 1.25rem !important;
+    }
+}
+
+/* Loading states */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid transparent;
+    border-top-color: var(--medical-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Sticky elements */
+.sticky-top {
+    z-index: 1020;
+}
+
+/* Blood type specific colors */
+.blood-type-o-negative { background-color: #dc3545 !important; }
+.blood-type-o-positive { background-color: #fd7e14 !important; }
+.blood-type-a-negative { background-color: #6f42c1 !important; }
+.blood-type-a-positive { background-color: #6610f2 !important; }
+.blood-type-b-negative { background-color: #20c997 !important; }
+.blood-type-b-positive { background-color: #0dcaf0 !important; }
+.blood-type-ab-negative { background-color: #198754 !important; }
+.blood-type-ab-positive { background-color: #0d6efd !important; }
+
+/* Dashboard specific styles */
+.dashboard-card {
+    background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.dashboard-stat {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+/* Notification styles */
+.notification-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: var(--medical-primary);
+    color: white;
+    border-radius: 50%;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    min-width: 1.5rem;
+    text-align: center;
+}
+
+/* Urgency level indicators */
+.urgency-critical {
+    background-color: #dc3545 !important;
+    animation: pulse 2s infinite;
+}
+
+.urgency-high {
+    background-color: #fd7e14 !important;
+}
+
+.urgency-medium {
+    background-color: #ffc107 !important;
+}
+
+.urgency-low {
+    background-color: #28a745 !important;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+/* Accessibility improvements */
+.btn:focus,
+.form-control:focus,
+.form-select:focus {
+    outline: 2px solid var(--medical-primary);
+    outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+    .navbar,
+    .btn,
+    .card-footer,
+    .modal,
+    footer {
+        display: none !important;
+    }
+    
+    .card {
+        border: 1px solid #000 !important;
+        box-shadow: none !important;
+    }
+    
+    .text-muted {
+        color: #000 !important;
+    }
+}
+
+/* Dark mode support (future enhancement) */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --medical-light: #2d3748;
+        --medical-dark: #f7fafc;
+    }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--medical-primary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--medical-secondary);
+}
+
+/* Animation classes */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.slide-in {
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(0); }
+}
+
+/* Utility classes */
+.text-shadow {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.box-shadow-sm {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+}
+
+.box-shadow {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.box-shadow-lg {
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+}
+
+.opacity-75 {
+    opacity: 0.75 !important;
+}
+
+.opacity-50 {
+    opacity: 0.5 !important;
+}
+
+.opacity-25 {
+    opacity: 0.25 !important;
+}

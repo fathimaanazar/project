@@ -1,0 +1,448 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Donors - Blood Donation Platform{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-users me-2 text-medical"></i>Manage Donors</h2>
+    <div>
+        {% if is_profile %}
+            <a href="{{ url_for('organization_dashboard') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+            </a>
+        {% else %}
+            <div class="btn-group">
+                <a href="{{ url_for('organization_dashboard') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                </a>
+                <button class="btn btn-success" disabled>
+                    <i class="fas fa-file-export me-2"></i>Export List
+                </button>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% if is_profile %}
+    <!-- Organization Profile Form -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-medical text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-building me-2"></i>
+                        {% if profile %}Update Organization Information{% else %}Organization Registration{% endif %}
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        
+                        <h6 class="text-medical mb-3"><i class="fas fa-building me-2"></i>Organization Information</h6>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.organization_name.label(class="form-label") }}
+                                {{ form.organization_name(class="form-control" + (" is-invalid" if form.organization_name.errors else "")) }}
+                                {% if form.organization_name.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.organization_name.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                {{ form.registration_number.label(class="form-label") }}
+                                {{ form.registration_number(class="form-control" + (" is-invalid" if form.registration_number.errors else "")) }}
+                                {% if form.registration_number.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.registration_number.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.contact_person.label(class="form-label") }}
+                                {{ form.contact_person(class="form-control" + (" is-invalid" if form.contact_person.errors else "")) }}
+                                {% if form.contact_person.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.contact_person.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                {{ form.phone.label(class="form-label") }}
+                                {{ form.phone(class="form-control" + (" is-invalid" if form.phone.errors else "")) }}
+                                {% if form.phone.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.phone.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <h6 class="text-medical mb-3"><i class="fas fa-map-marker-alt me-2"></i>Address Information</h6>
+                        
+                        <div class="mb-3">
+                            {{ form.address.label(class="form-label") }}
+                            {{ form.address(class="form-control" + (" is-invalid" if form.address.errors else ""), rows="3") }}
+                            {% if form.address.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.address.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                {{ form.city.label(class="form-label") }}
+                                {{ form.city(class="form-control" + (" is-invalid" if form.city.errors else "")) }}
+                                {% if form.city.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.city.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                {{ form.state.label(class="form-label") }}
+                                {{ form.state(class="form-control" + (" is-invalid" if form.state.errors else "")) }}
+                                {% if form.state.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.state.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-4 mb-4">
+                                {{ form.zip_code.label(class="form-label") }}
+                                {{ form.zip_code(class="form-control" + (" is-invalid" if form.zip_code.errors else "")) }}
+                                {% if form.zip_code.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.zip_code.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-medical btn-lg">
+                                <i class="fas fa-save me-2"></i>
+                                {% if profile %}Update Organization Profile{% else %}Save Organization Profile{% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <!-- Donor Management Interface -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Filter Donors</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <select class="form-select" id="bloodTypeFilter">
+                                <option value="">All Blood Types</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select" id="availabilityFilter">
+                                <option value="">All Donors</option>
+                                <option value="available">Available</option>
+                                <option value="not-available">Not Available</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" class="form-control" id="cityFilter" placeholder="Filter by city">
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-info w-100" onclick="applyFilters()">
+                                <i class="fas fa-search me-2"></i>Apply Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Donor Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm text-center">
+                <div class="card-body">
+                    <div class="text-primary mb-2">
+                        <i class="fas fa-users fa-2x"></i>
+                    </div>
+                    <h4 class="text-primary">{{ donors|length }}</h4>
+                    <p class="mb-0 text-muted">Total Donors</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm text-center">
+                <div class="card-body">
+                    <div class="text-success mb-2">
+                        <i class="fas fa-check-circle fa-2x"></i>
+                    </div>
+                    <h4 class="text-success">{{ donors|selectattr('is_available', 'equalto', True)|list|length }}</h4>
+                    <p class="mb-0 text-muted">Available Donors</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm text-center">
+                <div class="card-body">
+                    <div class="text-danger mb-2">
+                        <i class="fas fa-tint fa-2x"></i>
+                    </div>
+                    <h4 class="text-danger">{{ donors|selectattr('blood_type', 'equalto', 'O-')|list|length }}</h4>
+                    <p class="mb-0 text-muted">Universal Donors</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm text-center">
+                <div class="card-body">
+                    <div class="text-warning mb-2">
+                        <i class="fas fa-clock fa-2x"></i>
+                    </div>
+                    <h4 class="text-warning">{{ donors|selectattr('last_donation_date', 'none')|list|length }}</h4>
+                    <p class="mb-0 text-muted">First Time Donors</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Donors List -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-medical text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-list me-2"></i>Registered Donors</h5>
+                    <span class="badge bg-light text-dark">{{ donors|length }} Total</span>
+                </div>
+                <div class="card-body">
+                    {% if donors %}
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="donorsTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Blood Type</th>
+                                        <th>Phone</th>
+                                        <th>Location</th>
+                                        <th>Last Donation</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for donor in donors %}
+                                        <tr class="donor-row" 
+                                            data-blood-type="{{ donor.blood_type }}" 
+                                            data-availability="{{ 'available' if donor.is_available else 'not-available' }}"
+                                            data-city="{{ donor.city.lower() }}">
+                                            <td>
+                                                <strong>{{ donor.full_name }}</strong><br>
+                                                <small class="text-muted">Age: {{ calculate_age(donor.date_of_birth) }}</small>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-danger fs-6">{{ donor.blood_type }}</span>
+                                            </td>
+                                            <td>{{ donor.phone }}</td>
+                                            <td>
+                                                {{ donor.city }}, {{ donor.state }}<br>
+                                                <small class="text-muted">{{ donor.zip_code }}</small>
+                                            </td>
+                                            <td>
+                                                {% if donor.last_donation_date %}
+                                                    {{ donor.last_donation_date.strftime('%m/%d/%Y') }}<br>
+                                                    <small class="text-muted">
+                                                        {% set days_ago = (moment().date() - donor.last_donation_date).days %}
+                                                        {{ ((moment().date() - donor.last_donation_date).days) }} days ago
+                                                    </small>
+                                                {% else %}
+                                                    <span class="text-muted">Never donated</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if donor.is_available %}
+                                                    {% if can_donate(donor) %}
+                                                        <span class="badge bg-success">Ready to Donate</span>
+                                                    {% else %}
+                                                        <span class="badge bg-warning">Wait Period</span>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <span class="badge bg-secondary">Not Available</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-outline-primary btn-sm" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#donorModal{{ donor.id }}">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        
+                                        <!-- Donor Details Modal -->
+                                        <div class="modal fade" id="donorModal{{ donor.id }}" tabindex="-1">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">{{ donor.full_name }} - Donor Details</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="row mb-3">
+                                                            <div class="col-md-6">
+                                                                <strong>Full Name:</strong> {{ donor.full_name }}<br>
+                                                                <strong>Blood Type:</strong> <span class="badge bg-danger">{{ donor.blood_type }}</span><br>
+                                                                <strong>Date of Birth:</strong> {{ donor.date_of_birth.strftime('%B %d, %Y') }}<br>
+                                                                <strong>Age:</strong> {{ calculate_age(donor.date_of_birth) }} years<br>
+                                                                <strong>Phone:</strong> {{ donor.phone }}
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <strong>Address:</strong><br>
+                                                                {{ donor.address }}<br>
+                                                                {{ donor.city }}, {{ donor.state }} {{ donor.zip_code }}<br><br>
+                                                                <strong>Availability:</strong> 
+                                                                {% if donor.is_available %}
+                                                                    <span class="badge bg-success">Available</span>
+                                                                {% else %}
+                                                                    <span class="badge bg-secondary">Not Available</span>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="row mb-3">
+                                                            <div class="col-12">
+                                                                <strong>Last Donation:</strong> 
+                                                                {% if donor.last_donation_date %}
+                                                                    {{ donor.last_donation_date.strftime('%B %d, %Y') }}
+                                                                    <small class="text-muted">
+                                                                        ({{ ((moment().date() - donor.last_donation_date).days) }} days ago)
+                                                                    </small>
+                                                                {% else %}
+                                                                    <span class="text-muted">No previous donations</span>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        {% if donor.medical_conditions %}
+                                                            <div class="row mb-3">
+                                                                <div class="col-12">
+                                                                    <strong>Medical Conditions:</strong><br>
+                                                                    <div class="alert alert-info">
+                                                                        {{ donor.medical_conditions }}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        {% endif %}
+                                                        
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <strong>Donation Eligibility:</strong><br>
+                                                                {% if can_donate(donor) %}
+                                                                    <div class="alert alert-success">
+                                                                        <i class="fas fa-check-circle me-2"></i>
+                                                                        This donor is eligible to donate blood now.
+                                                                    </div>
+                                                                {% else %}
+                                                                    <div class="alert alert-warning">
+                                                                        <i class="fas fa-clock me-2"></i>
+                                                                        This donor must wait at least 56 days between donations.
+                                                                    </div>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        <button type="button" class="btn btn-primary" disabled>
+                                                            <i class="fas fa-envelope me-2"></i>Contact Donor
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center text-muted py-5">
+                            <i class="fas fa-users fa-4x mb-3"></i>
+                            <h5>No Donors Found</h5>
+                            <p>There are currently no registered donors in the system.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+function applyFilters() {
+    const bloodTypeFilter = document.getElementById('bloodTypeFilter').value;
+    const availabilityFilter = document.getElementById('availabilityFilter').value;
+    const cityFilter = document.getElementById('cityFilter').value.toLowerCase();
+    const rows = document.querySelectorAll('.donor-row');
+    
+    rows.forEach(row => {
+        let showRow = true;
+        
+        // Blood type filter
+        if (bloodTypeFilter && row.dataset.bloodType !== bloodTypeFilter) {
+            showRow = false;
+        }
+        
+        // Availability filter
+        if (availabilityFilter && row.dataset.availability !== availabilityFilter) {
+            showRow = false;
+        }
+        
+        // City filter
+        if (cityFilter && !row.dataset.city.includes(cityFilter)) {
+            showRow = false;
+        }
+        
+        row.style.display = showRow ? '' : 'none';
+    });
+}
+
+// Clear filters
+function clearFilters() {
+    document.getElementById('bloodTypeFilter').value = '';
+    document.getElementById('availabilityFilter').value = '';
+    document.getElementById('cityFilter').value = '';
+    applyFilters();
+}
+</script>
+{% endblock %}

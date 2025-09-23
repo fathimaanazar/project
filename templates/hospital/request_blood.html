@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if is_profile %}Hospital Profile{% else %}Request Blood{% endif %} - Blood Donation Platform
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>
+        <i class="fas fa-{% if is_profile %}hospital-user{% else %}plus{% endif %} me-2 text-medical"></i>
+        {% if is_profile %}Hospital Profile{% else %}Request Blood{% endif %}
+    </h2>
+    <a href="{{ url_for('hospital_dashboard') }}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+    </a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-medical text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-{% if is_profile %}hospital{% else %}clipboard-list{% endif %} me-2"></i>
+                    {% if is_profile %}
+                        {% if profile %}Update Hospital Information{% else %}Hospital Registration{% endif %}
+                    {% else %}
+                        Create Blood Request
+                    {% endif %}
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    
+                    {% if is_profile %}
+                        <!-- Hospital Profile Form -->
+                        <h6 class="text-medical mb-3"><i class="fas fa-hospital me-2"></i>Hospital Information</h6>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.hospital_name.label(class="form-label") }}
+                                {{ form.hospital_name(class="form-control" + (" is-invalid" if form.hospital_name.errors else "")) }}
+                                {% if form.hospital_name.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.hospital_name.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                {{ form.license_number.label(class="form-label") }}
+                                {{ form.license_number(class="form-control" + (" is-invalid" if form.license_number.errors else "")) }}
+                                {% if form.license_number.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.license_number.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.contact_person.label(class="form-label") }}
+                                {{ form.contact_person(class="form-control" + (" is-invalid" if form.contact_person.errors else "")) }}
+                                {% if form.contact_person.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.contact_person.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                {{ form.phone.label(class="form-label") }}
+                                {{ form.phone(class="form-control" + (" is-invalid" if form.phone.errors else "")) }}
+                                {% if form.phone.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.phone.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <h6 class="text-medical mb-3"><i class="fas fa-map-marker-alt me-2"></i>Address Information</h6>
+                        
+                        <div class="mb-3">
+                            {{ form.address.label(class="form-label") }}
+                            {{ form.address(class="form-control" + (" is-invalid" if form.address.errors else ""), rows="3") }}
+                            {% if form.address.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.address.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                {{ form.city.label(class="form-label") }}
+                                {{ form.city(class="form-control" + (" is-invalid" if form.city.errors else "")) }}
+                                {% if form.city.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.city.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                {{ form.state.label(class="form-label") }}
+                                {{ form.state(class="form-control" + (" is-invalid" if form.state.errors else "")) }}
+                                {% if form.state.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.state.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-4 mb-4">
+                                {{ form.zip_code.label(class="form-label") }}
+                                {{ form.zip_code(class="form-control" + (" is-invalid" if form.zip_code.errors else "")) }}
+                                {% if form.zip_code.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.zip_code.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-medical btn-lg">
+                                <i class="fas fa-save me-2"></i>
+                                {% if profile %}Update Hospital Profile{% else %}Save Hospital Profile{% endif %}
+                            </button>
+                        </div>
+                        
+                    {% else %}
+                        <!-- Blood Request Form -->
+                        <div class="alert alert-info" role="alert">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Important:</strong> All compatible donors in your area will be notified of this request.
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.blood_type.label(class="form-label") }}
+                                {{ form.blood_type(class="form-select" + (" is-invalid" if form.blood_type.errors else "")) }}
+                                {% if form.blood_type.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.blood_type.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                {{ form.units_needed.label(class="form-label") }}
+                                {{ form.units_needed(class="form-control" + (" is-invalid" if form.units_needed.errors else "")) }}
+                                {% if form.units_needed.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.units_needed.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.urgency_level.label(class="form-label") }}
+                                {{ form.urgency_level(class="form-select" + (" is-invalid" if form.urgency_level.errors else "")) }}
+                                {% if form.urgency_level.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.urgency_level.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">
+                                    <small>
+                                        <strong>Critical:</strong> Life-threatening emergency<br>
+                                        <strong>High:</strong> Urgent surgery required<br>
+                                        <strong>Medium:</strong> Scheduled surgery<br>
+                                        <strong>Low:</strong> Routine restocking
+                                    </small>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                {{ form.needed_by.label(class="form-label") }}
+                                {{ form.needed_by(class="form-control" + (" is-invalid" if form.needed_by.errors else "")) }}
+                                {% if form.needed_by.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.needed_by.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            {{ form.description.label(class="form-label") }}
+                            {{ form.description(class="form-control" + (" is-invalid" if form.description.errors else ""), rows="4") }}
+                            {% if form.description.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.description.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">
+                                Provide details about the medical situation, procedure, or reason for the blood request.
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-danger btn-lg">
+                                <i class="fas fa-paper-plane me-2"></i>Submit Blood Request
+                            </button>
+                        </div>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

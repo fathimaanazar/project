@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %}Hospital Dashboard - Blood Donation Platform{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-hospital me-2 text-medical"></i>Hospital Dashboard</h2>
+    <div>
+        {% if profile %}
+            <a href="{{ url_for('request_blood') }}" class="btn btn-danger me-2">
+                <i class="fas fa-plus me-2"></i>Request Blood
+            </a>
+            <a href="{{ url_for('hospital_profile') }}" class="btn btn-outline-medical">
+                <i class="fas fa-hospital-user me-2"></i>Edit Profile
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+{% if not profile %}
+    <div class="alert alert-warning" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <strong>Complete Your Hospital Profile</strong> - Please complete your hospital profile to start requesting blood.
+        <a href="{{ url_for('hospital_profile') }}" class="btn btn-sm btn-warning ms-2">Complete Profile</a>
+    </div>
+{% else %}
+    <!-- Hospital Profile Summary -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-medical text-white">
+                    <h5 class="mb-0"><i class="fas fa-hospital me-2"></i>Hospital Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Hospital Name:</strong> {{ profile.hospital_name }}</p>
+                            <p><strong>License Number:</strong> {{ profile.license_number }}</p>
+                            <p><strong>Contact Person:</strong> {{ profile.contact_person }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Phone:</strong> {{ profile.phone }}</p>
+                            <p><strong>Location:</strong> {{ profile.city }}, {{ profile.state }}</p>
+                            <p><strong>Active Requests:</strong> 
+                                <span class="badge bg-danger">{{ blood_requests|selectattr('status', 'equalto', 'active')|list|length }}</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Blood Requests -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-list me-2"></i>Blood Requests</h5>
+                    <a href="{{ url_for('request_blood') }}" class="btn btn-light btn-sm">
+                        <i class="fas fa-plus me-2"></i>New Request
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if blood_requests %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Blood Type</th>
+                                        <th>Units Needed</th>
+                                        <th>Urgency</th>
+                                        <th>Needed By</th>
+                                        <th>Status</th>
+                                        <th>Responses</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for request in blood_requests %}
+                                        <tr>
+                                            <td>
+                                                <span class="badge bg-danger fs-6">{{ request.blood_type }}</span>
+                                            </td>
+                                            <td>{{ request.units_needed }}</td>
+                                            <td>
+                                                <span class="badge bg-{{ format_urgency_level(request.urgency_level) }}">
+                                                    {{ request.urgency_level.title() }}
+                                                </span>
+                                            </td>
+                                            <td>{{ request.needed_by.strftime('%m/%d/%Y') }}</td>
+                                            <td>
+                                                {% if request.status == 'active' %}
+                                                    <span class="badge bg-success">Active</span>
+                                                {% elif request.status == 'fulfilled' %}
+                                                    <span class="badge bg-primary">Fulfilled</span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">{{ request.status.title() }}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-info">{{ request.responses|length }}</span>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-outline-primary btn-sm" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#requestModal{{ request.id }}">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        
+                                        <!-- Request Details Modal -->
+                                        <div class="modal fade" id="requestModal{{ request.id }}" tabindex="-1">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Blood Request Details</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="row mb-3">
+                                                            <div class="col-md-6">
+                                                                <strong>Blood Type:</strong> {{ request.blood_type }}<br>
+                                                                <strong>Units Needed:</strong> {{ request.units_needed }}<br>
+                                                                <strong>Urgency:</strong> {{ request.urgency_level.title() }}<br>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <strong>Needed By:</strong> {{ request.needed_by.strftime('%B %d, %Y') }}<br>
+                                                                <strong>Requested:</strong> {{ request.requested_at.strftime('%B %d, %Y at %I:%M %p') }}<br>
+                                                                <strong>Status:</strong> {{ request.status.title() }}
+                                                            </div>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <strong>Description:</strong><br>
+                                                            {{ request.description }}
+                                                        </div>
+                                                        
+                                                        {% if request.responses %}
+                                                            <h6>Donor Responses ({{ request.responses|length }})</h6>
+                                                            <div class="table-responsive">
+                                                                <table class="table table-sm">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Donor</th>
+                                                                            <th>Blood Type</th>
+                                                                            <th>Response</th>
+                                                                            <th>Date</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        {% for response in request.responses %}
+                                                                            <tr>
+                                                                                <td>{{ response.donor.full_name }}</td>
+                                                                                <td>{{ response.donor.blood_type }}</td>
+                                                                                <td>
+                                                                                    {% if response.status == 'accepted' %}
+                                                                                        <span class="badge bg-success">Accepted</span>
+                                                                                    {% else %}
+                                                                                        <span class="badge bg-secondary">Declined</span>
+                                                                                    {% endif %}
+                                                                                </td>
+                                                                                <td>{{ response.response_date.strftime('%m/%d/%Y') }}</td>
+                                                                            </tr>
+                                                                        {% endfor %}
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        {% else %}
+                                                            <div class="text-center text-muted">
+                                                                <p>No responses yet</p>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center text-muted py-5">
+                            <i class="fas fa-clipboard-list fa-4x mb-3"></i>
+                            <h5>No Blood Requests</h5>
+                            <p>You haven't created any blood requests yet.</p>
+                            <a href="{{ url_for('request_blood') }}" class="btn btn-danger">
+                                <i class="fas fa-plus me-2"></i>Create First Request
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

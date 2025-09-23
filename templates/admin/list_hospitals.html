@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}All Hospitals - Blood Donation Platform{% endblock %}
+{% block content %}
+<div class="container my-4">
+    <h2><i class="fas fa-hospital me-2 text-info"></i>All Hospitals</h2>
+    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary mb-3">
+        <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+    </a>
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Registered</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for hospital in hospitals %}
+                <tr>
+                    <td>{{ hospital.username }}</td>
+                    <td>{{ hospital.email }}</td>
+                    <td>{{ hospital.created_at.strftime('%Y-%m-%d') }}</td>
+                    <td>{% if hospital.is_active %}<span class="badge bg-success">Active</span>{% else %}<span class="badge bg-secondary">Inactive</span>{% endif %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %} 

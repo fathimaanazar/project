@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}User Analytics - Blood Donation Platform{% endblock %}
+{% block content %}
+<div class="container my-4">
+    <h2><i class="fas fa-chart-bar me-2 text-medical"></i>User Registration Analytics</h2>
+    <canvas id="registrationsChart" height="100"></canvas>
+    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary mt-4">
+        <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+    </a>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('registrationsChart').getContext('2d');
+    const registrationsChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ days|tojson }},
+            datasets: [
+                {
+                    label: 'Donors',
+                    data: {{ donor_counts|tojson }},
+                    borderColor: '#28a745',
+                    backgroundColor: 'rgba(40,167,69,0.1)',
+                    fill: false,
+                    tension: 0.3,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#28a745',
+                    pointBorderColor: '#fff',
+                },
+                {
+                    label: 'Hospitals',
+                    data: {{ hospital_counts|tojson }},
+                    borderColor: '#17a2b8',
+                    backgroundColor: 'rgba(23,162,184,0.1)',
+                    fill: false,
+                    tension: 0.3,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#17a2b8',
+                    pointBorderColor: '#fff',
+                },
+                {
+                    label: 'Organizations',
+                    data: {{ org_counts|tojson }},
+                    borderColor: '#ffc107',
+                    backgroundColor: 'rgba(255,193,7,0.1)',
+                    fill: false,
+                    tension: 0.3,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#ffc107',
+                    pointBorderColor: '#fff',
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: true },
+                title: {
+                    display: true,
+                    text: 'User Registrations in the Last 7 Days',
+                    font: { size: 18 }
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.parsed.y;
+                        }
+                    }
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %} 

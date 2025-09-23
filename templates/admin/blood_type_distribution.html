@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Blood Type Distribution - Blood Donation Platform{% endblock %}
+{% block content %}
+<div class="container my-4">
+    <h2><i class="fas fa-tint me-2 text-medical"></i>Blood Type Distribution Among Donors</h2>
+    <canvas id="bloodTypeChart" height="100"></canvas>
+    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary mt-4">
+        <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+    </a>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('bloodTypeChart').getContext('2d');
+    const bloodTypeChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ blood_types|tojson }},
+            datasets: [{
+                label: 'Number of Donors',
+                data: {{ counts|tojson }},
+                backgroundColor: [
+                    '#dc3545', '#fd7e14', '#6f42c1', '#6610f2', '#198754', '#0d6efd', '#20c997', '#ffc107'
+                ],
+                borderColor: '#fff',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                title: {
+                    display: true,
+                    text: 'Registered Donors by Blood Type',
+                    font: { size: 18 }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.parsed.y;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %} 
