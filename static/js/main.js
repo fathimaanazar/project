@@ -96,13 +96,23 @@ function validateAge(input) {
  */
 function formatPhoneNumber(input) {
     let value = input.value.replace(/\D/g, '');
-    if (value.length >= 6) {
-        value = value.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
-    } else if (value.length >= 3) {
-        value = value.replace(/(\d{3})(\d{0,3})/, '($1) $2');
+    let formattedValue = '+91 ';
+
+    if (value.length > 10) {
+        value = value.substring(0, 10);
     }
-    input.value = value;
+
+    if (value.length >= 6) {
+        formattedValue += value.replace(/(\d{5})(\d{1,5})/, '$1 $2');
+    } else if (value.length >= 1) {
+        formattedValue += value;
+    } else {
+        formattedValue = '+91 ';
+    }
+    
+    input.value = formattedValue;
 }
+
 
 /**
  * Check password strength
