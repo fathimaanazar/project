@@ -28,7 +28,7 @@ class DonorProfileForm(FlaskForm):
     phone = StringField('Phone', validators=[DataRequired(), Length(max=20)])
     address = TextAreaField('Address', validators=[DataRequired()])
     city = StringField('City', validators=[DataRequired(), Length(max=50)])
-    state = StringField('State', validators=[DataRequired(), Length(max=50)])
+    state = SelectField('State', choices=INDIAN_STATES, validators=[DataRequired()])
     zip_code = StringField('PIN Code', validators=[DataRequired(), Length(max=10)])
     date_of_birth = DateField('Date of Birth', validators=[DataRequired()])
     medical_conditions = TextAreaField('Medical Conditions (Optional)')
@@ -40,7 +40,7 @@ class HospitalProfileForm(FlaskForm):
     phone = StringField('Phone', validators=[DataRequired(), Length(max=20)])
     address = TextAreaField('Address', validators=[DataRequired()])
     city = StringField('City', validators=[DataRequired(), Length(max=50)])
-    state = StringField('State', validators=[DataRequired(), Length(max=50)])
+    state = SelectField('State', choices=INDIAN_STATES, validators=[DataRequired()])
     zip_code = StringField('PIN Code', validators=[DataRequired(), Length(max=10)])
 
 class OrganizationProfileForm(FlaskForm):
@@ -50,7 +50,7 @@ class OrganizationProfileForm(FlaskForm):
     phone = StringField('Phone', validators=[DataRequired(), Length(max=20)])
     address = TextAreaField('Address', validators=[DataRequired()])
     city = StringField('City', validators=[DataRequired(), Length(max=50)])
-    state = StringField('State', validators=[DataRequired(), Length(max=50)])
+    state = SelectField('State', choices=INDIAN_STATES, validators=[DataRequired()])
     zip_code = StringField('PIN Code', validators=[DataRequired(), Length(max=10)])
 
 class BloodRequestForm(FlaskForm):
@@ -75,7 +75,7 @@ class DonationEventForm(FlaskForm):
     location = StringField('Location', validators=[DataRequired(), Length(max=200)])
     address = TextAreaField('Address', validators=[DataRequired()])
     city = StringField('City', validators=[DataRequired(), Length(max=50)])
-    state = StringField('State', validators=[DataRequired(), Length(max=50)])
+    state = SelectField('State', choices=INDIAN_STATES, validators=[DataRequired()])
     max_participants = IntegerField('Maximum Participants', validators=[NumberRange(min=1)])
 
 class SearchForm(FlaskForm):
@@ -84,4 +84,5 @@ class SearchForm(FlaskForm):
                                    ('B+', 'B+'), ('B-', 'B-'), ('AB+', 'AB+'), ('AB-', 'AB-'), 
                                    ('O+', 'O+'), ('O-', 'O-')])
     city = StringField('City')
-    state = StringField('State')
+    state = SelectField('State', choices=INDIAN_STATES, validators=[DataRequired()])
+
