@@ -29,7 +29,7 @@ class DonorProfileForm(FlaskForm):
     address = TextAreaField('Address', validators=[DataRequired()])
     city = StringField('City', validators=[DataRequired(), Length(max=50)])
     state = StringField('State', validators=[DataRequired(), Length(max=50)])
-    zip_code = StringField('ZIP Code', validators=[DataRequired(), Length(max=10)])
+    zip_code = StringField('PIN Code', validators=[DataRequired(), Length(max=10)])
     date_of_birth = DateField('Date of Birth', validators=[DataRequired()])
     medical_conditions = TextAreaField('Medical Conditions (Optional)')
 
@@ -41,7 +41,7 @@ class HospitalProfileForm(FlaskForm):
     address = TextAreaField('Address', validators=[DataRequired()])
     city = StringField('City', validators=[DataRequired(), Length(max=50)])
     state = StringField('State', validators=[DataRequired(), Length(max=50)])
-    zip_code = StringField('ZIP Code', validators=[DataRequired(), Length(max=10)])
+    zip_code = StringField('PIN Code', validators=[DataRequired(), Length(max=10)])
 
 class OrganizationProfileForm(FlaskForm):
     organization_name = StringField('Organization Name', validators=[DataRequired(), Length(max=200)])
@@ -51,7 +51,7 @@ class OrganizationProfileForm(FlaskForm):
     address = TextAreaField('Address', validators=[DataRequired()])
     city = StringField('City', validators=[DataRequired(), Length(max=50)])
     state = StringField('State', validators=[DataRequired(), Length(max=50)])
-    zip_code = StringField('ZIP Code', validators=[DataRequired(), Length(max=10)])
+    zip_code = StringField('PIN Code', validators=[DataRequired(), Length(max=10)])
 
 class BloodRequestForm(FlaskForm):
     blood_type = SelectField('Blood Type', 
