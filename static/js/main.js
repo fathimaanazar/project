@@ -96,22 +96,31 @@ function validateAge(input) {
  */
 function formatPhoneNumber(input) {
     let value = input.value.replace(/\D/g, '');
-    let formattedValue = '+91 ';
-
-    if (value.length > 10) {
-        value = value.substring(0, 10);
+    if (value.startsWith('0')) {
+        value = value.slice(1);
     }
-
-    if (value.length >= 6) {
-        formattedValue += value.replace(/(\d{5})(\d{1,5})/, '$1 $2');
-    } else if (value.length >= 1) {
-        formattedValue += value;
+    if (!value.startsWith('91')) {
+        value = '91' + value;
+    }
+    if (value.length > 2) {
+        const national = value.slice(2);
+        if (national.length <= 5) {
+            input.value = `+91 ${national}`;
+        } else {
+            input.value = `+91 ${national.slice(0,5)} ${national.slice(5,10)}`;
+        }
     } else {
-        formattedValue = '+91 ';
+        input.value = '+91 ';
     }
-    
-    input.value = formattedValue;
 }
+
+const phoneInputs = document.querySelectorAll('input[name*="phone"]');
+phoneInputs.forEach(input => {
+    input.addEventListener('input', function () {
+        formatPhoneNumber(this);
+    });
+});
+
 
 
 /**
