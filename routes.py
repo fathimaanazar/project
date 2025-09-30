@@ -537,7 +537,7 @@ def create_admin():
         email='admin@bloodbank.com',
         role='admin'
     )
-    admin.set_password('admin123')
+    admin.set_password('admimistrator@bloodbank')
     db.session.add(admin)
     db.session.commit()
     
