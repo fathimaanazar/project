@@ -537,11 +537,11 @@ def create_admin():
         email='admin@bloodbank.com',
         role='admin'
     )
-    admin.set_password('administrator@bloodbank')
+    admin.set_password('admin123')
     db.session.add(admin)
     db.session.commit()
     
-    flash('Admin user created successfully! Username: admin, Password: administrator@bloodbank', 'success')
+    flash('Admin user created successfully! Username: admin, Password: admin123', 'success')
     return redirect(url_for('login'))
 
 @app.route('/admin/donors')
