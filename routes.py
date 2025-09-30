@@ -541,7 +541,7 @@ def create_admin():
     db.session.add(admin)
     db.session.commit()
     
-    flash('Admin user created successfully! Username: admin, Password: admin123', 'success')
+    flash('Admin user created successfully! Username: admin, Password: administrator@bloodbank', 'success')
     return redirect(url_for('login'))
 
 @app.route('/admin/donors')
